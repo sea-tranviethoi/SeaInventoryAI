@@ -2,6 +2,16 @@ import streamlit as st
 import sqlite3
 import pandas as pd
 import asyncio
+import sys
+import concurrent.futures
+
+def run_async(coro):
+    def run_in_thread():
+        if sys.platform == "win32":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        return asyncio.run(coro)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        return pool.submit(run_in_thread).result()
 
 from my_mcp_client import call_tool
 from agent import inventory_agent
@@ -33,10 +43,7 @@ product_sales = sales[sales["product_id"] == product]
 st.subheader("Sales History")
 st.line_chart(product_sales.set_index("date")["quantity"])
 
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-
-result = loop.run_until_complete(
+result = run_async(
     call_tool(
         "forecast_demand",
         {"product_id": product}
@@ -74,7 +81,7 @@ question = st.text_input("Ask AI about inventory")
 
 if question:
 
-    answer = loop.run_until_complete(
+    answer = run_async(
         inventory_agent(product, question)
     )
 

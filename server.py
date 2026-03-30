@@ -55,7 +55,8 @@ def reorder_analysis(product_id: str):
             "SELECT stock_qty FROM inventory WHERE product_id=?",
             (product_id,)
         )
-        stock = cur.fetchone()[0]
+        row = cur.fetchone()
+        stock = row[0] if row else None
         cur.execute(
             "SELECT quantity FROM sales_history WHERE product_id=?",
             (product_id,)
@@ -63,6 +64,9 @@ def reorder_analysis(product_id: str):
         rows = cur.fetchall()
 
     quantities = [r[0] for r in rows]
+
+    if stock is None:
+        return {"error": "Product not found"}
 
     avg = sum(quantities)/len(quantities) if quantities else 0
 

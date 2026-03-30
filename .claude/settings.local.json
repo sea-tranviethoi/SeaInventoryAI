@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip --version)",
+      "Bash(D:/SeaInventoryAI/venv/Scripts/python.exe --version)",
+      "Bash(D:/SeaInventoryAI/.venv/Scripts/python.exe --version)",
+      "Bash(grep \"dist-info$\")"
+    ]
+  }
+}
