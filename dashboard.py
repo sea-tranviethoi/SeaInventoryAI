@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 import asyncio
 import sys
+import os
 import concurrent.futures
 
 def run_async(coro):
@@ -18,7 +19,8 @@ from agent import inventory_agent
 
 st.title("AI Inventory Management Dashboard")
 
-conn = sqlite3.connect("inventory.db")
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.db")
+conn = sqlite3.connect(DB_PATH)
 
 inventory = pd.read_sql_query(
     "SELECT * FROM inventory",
