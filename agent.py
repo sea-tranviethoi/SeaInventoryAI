@@ -1,5 +1,10 @@
+import sys
 import requests
 from my_mcp_client import reorder_analysis
+
+if sys.platform == "win32":
+    import asyncio
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
 def ask_llama(prompt):

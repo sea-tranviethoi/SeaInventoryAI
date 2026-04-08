@@ -13,7 +13,7 @@ async def test():
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 print("Connected successfully!")
-                result = await session.call_tool("reorder_analysis", {"product_id": "P001"})
+                result = await session.call_tool("reorder_analysis", {"product_id": "A001"})
                 print("Result:", result)
     except ExceptionGroup as eg:
         print(f"\n=== ExceptionGroup: {eg} ===")

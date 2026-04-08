@@ -5,7 +5,7 @@ from mcp.client.sse import sse_client
 
 async def call_tool(tool_name, args):
 
-    async with sse_client("http://127.0.0.1:8000/sse") as (read, write):
+    async with sse_client("http://127.0.0.1:8000/mcp/sse") as (read, write):
 
         async with ClientSession(read, write) as session:
 
