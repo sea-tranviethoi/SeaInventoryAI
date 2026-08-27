@@ -5,7 +5,7 @@ import os
 
 app = FastAPI()
 mcp = FastMCP("inventory-server")
-app.mount("/mcp", mcp)
+app.mount("/mcp", mcp.sse_app())
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "inventory.db")

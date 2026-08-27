@@ -12,12 +12,13 @@ def ask_llama(prompt):
     r = requests.post(
         "http://localhost:11434/api/generate",
         json={
-            "model": "llama3",
+            "model": "llama3.1:8b",
             "prompt": prompt,
             "stream": False
         }
     )
 
+    print("DEBUG OLLAMA:", r.status_code, r.json())
     return r.json().get("response", "")
 
 

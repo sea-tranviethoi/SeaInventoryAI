@@ -76,7 +76,7 @@ TRANSLATIONS = {
 
 lang = st.sidebar.selectbox(
     "Language / Ngôn ngữ / 言語",
-    options=["en", "vi", "ja"],
+    options=["vi", "en", "ja"],
     format_func=lambda x: {"en": "English", "vi": "Tiếng Việt", "ja": "日本語"}[x]
 )
 t = TRANSLATIONS[lang]
@@ -87,7 +87,9 @@ DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inventory.db
 conn = sqlite3.connect(DB_PATH)
 
 inventory = pd.read_sql_query(
-    "SELECT * FROM inventory",
+    """SELECT i.product_id, p.name, i.stock_qty
+       FROM inventory i
+       JOIN products p ON i.product_id = p.product_id""",
     conn
 )
 
@@ -109,12 +111,16 @@ product_sales = sales[sales["product_id"] == product]
 st.subheader(t["sales_history"])
 st.line_chart(product_sales.set_index("date")["quantity"])
 
-result = run_async(
-    call_tool(
-        "forecast_demand",
-        {"product_id": product}
+try:
+    result = run_async(
+        call_tool(
+            "forecast_demand",
+            {"product_id": product}
+        )
     )
-)
+except Exception as e:
+    st.error(f"Cannot connect to MCP server. Make sure `server.py` is running.\n\n{e}")
+    result = {}
 
 avg_daily_sales = result.get("avg_daily_sales", 0)
 forecast_30 = result.get("forecast_30_days", 0)
